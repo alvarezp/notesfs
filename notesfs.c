@@ -507,10 +507,12 @@ int main(int argc, char *argv[])
 		fprintf(stderr, "Error opening the database file: %s", sqlite3_errmsg(ppDb));
 		return 1;
 	};
-	argv[1] = argv[2];
-	argv[2] = argv[3];
-	argv[3] = argv[4];
-	argc--; 
+
+	for (r = 2; r < argc; ++r) {
+		argv[r-1] = argv[r];
+	}
+	argc--;
+
 	lf = fopen("/home/alvarezp/fuse.log", "w");
 	r = fuse_main(argc, argv, &notesfs_oper, NULL);
 	sqlite3_close(ppDb);
