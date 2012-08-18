@@ -182,7 +182,7 @@ static int notesfs_getattr(const char *path, struct stat *stbuf)
 		sqlite3_finalize(ppStmt);
     } else if (path[1] == '0') {
 
-        stbuf->st_mode = S_IFREG | 0666;
+        stbuf->st_mode = S_IFREG | 0444;
         stbuf->st_nlink = 1;
 
 		char s[5];
