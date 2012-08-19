@@ -66,10 +66,9 @@ static int notesfs_truncate(const char *path, off_t o) {
 
 		sqlite3_stmt *ppStmt = NULL;
 		const char *pzTail = NULL;
-		sqlite3_prepare(ppDb, "UPDATE note_bodies SET data = ? WHERE substr(data,1,?) == ?;", -1, &ppStmt, &pzTail);
+		sqlite3_prepare(ppDb, "UPDATE note_bodies SET data = ? WHERE note_id IN (SELECT ROWID FROM note WHERE note.title = ?);", -1, &ppStmt, &pzTail);
 		sqlite3_bind_text(ppStmt, 1, &path[1], -1, SQLITE_TRANSIENT);
-		sqlite3_bind_int(ppStmt, 2, strlen(&path[1]));
-		sqlite3_bind_text(ppStmt, 3, &path[1], -1, SQLITE_TRANSIENT);
+		sqlite3_bind_text(ppStmt, 2, &path[1], -1, SQLITE_TRANSIENT);
 
 		r = sqlite3_step(ppStmt);
 		if (r != SQLITE_DONE) {
@@ -150,11 +149,10 @@ static int notesfs_getattr(const char *path, struct stat *stbuf)
 
 		sqlite3_stmt *ppStmt = NULL;
 		const char *pzTail;
-		const char *sql = "SELECT substr(replace(replace(replace(replace(data,'<div>','\n'),'</div>',''),'<br>',''),'&lt;','<'),?) FROM note_bodies WHERE substr(data,1,?) == ?;";
+		const char *sql = "SELECT substr(replace(replace(replace(replace(data,'<div>','\n'),'</div>',''),'<br>',''),'&lt;','<'),?) FROM note_bodies WHERE note_id IN (SELECT ROWID FROM note WHERE note.title = ?);";
 		sqlite3_prepare(ppDb, sql, -1, &ppStmt, &pzTail);
 		sqlite3_bind_int(ppStmt, 1, strlen(path) + 1);
-		sqlite3_bind_int(ppStmt, 2, strlen(&path[1]));
-		sqlite3_bind_text(ppStmt, 3, &path[1], -1, SQLITE_TRANSIENT);
+		sqlite3_bind_text(ppStmt, 2, &path[1], -1, SQLITE_TRANSIENT);
 
 		int r;	
 		r = sqlite3_step(ppStmt);
@@ -329,11 +327,10 @@ static int notesfs_write(const char * path, const char * buf, size_t size, off_t
 
 		sqlite3_stmt *ppStmt = NULL;
 		const char *pzTail = NULL;
-		const char *sql = "SELECT substr(replace(replace(replace(replace(data,'<div>','\n'),'</div>',''),'<br>',''),'&lt;','<'),?) FROM note_bodies WHERE substr(data,1,?) == ?;";
+		const char *sql = "SELECT substr(replace(replace(replace(replace(data,'<div>','\n'),'</div>',''),'<br>',''),'&lt;','<'),?) FROM note_bodies WHERE note_id IN (SELECT ROWID FROM note WHERE note.title = ?);";
 		sqlite3_prepare(ppDb, sql, -1, &ppStmt, &pzTail);
 		sqlite3_bind_int(ppStmt, 1, strlen(path) + 1);
-		sqlite3_bind_int(ppStmt, 2, strlen(&path[1]));
-		sqlite3_bind_text(ppStmt, 3, &path[1], -1, SQLITE_TRANSIENT);
+		sqlite3_bind_text(ppStmt, 2, &path[1], -1, SQLITE_TRANSIENT);
 
 		int r;
 		const char *s1;
@@ -368,11 +365,10 @@ static int notesfs_write(const char * path, const char * buf, size_t size, off_t
 
 		ppStmt = NULL;
 		pzTail = NULL;
-		sqlite3_prepare(ppDb, "UPDATE note_bodies SET data = replace(replace(replace(?,'<','&lt;'),'\n','</div><div>'),'&&&','<') WHERE substr(data,1,?) == ?;", -1, &ppStmt, &pzTail);
+		sqlite3_prepare(ppDb, "UPDATE note_bodies SET data = replace(replace(replace(?,'<','&lt;'),'\n','</div><div>'),'&&&','<') WHERE WHERE note_id IN (SELECT ROWID FROM note WHERE note.title = ?);", -1, &ppStmt, &pzTail);
 		/*sqlite3_prepare(ppDb, "UPDATE note_bodies SET data = ? WHERE substr(data,1,?) == ?;", -1, &ppStmt, &pzTail);*/
 		sqlite3_bind_text(ppStmt, 1, new, -1, SQLITE_STATIC);
-		sqlite3_bind_int(ppStmt, 2, strlen(&path[1]));
-		sqlite3_bind_text(ppStmt, 3, &path[1], -1, SQLITE_TRANSIENT);
+		sqlite3_bind_text(ppStmt, 2, &path[1], -1, SQLITE_TRANSIENT);
 		fprintf(lf, "::----- ABOUT TO WRITE:\n");
 		fprintf(lf, "::-----   old = |");
 		fwrite(s, b, 1, lf);
@@ -413,12 +409,11 @@ static int notesfs_read(const char *path, char *buf, size_t size, off_t offset,
 
 		sqlite3_stmt *ppStmt = NULL;
 		const char *pzTail;
-		const char *sql = "SELECT substr(replace(replace(replace(replace(data,'<div>','\n'),'</div>',''),'<br>',''),'&lt;','<'),?,?) FROM note_bodies WHERE substr(data,1,?) == ?;";
+		const char *sql = "SELECT substr(replace(replace(replace(replace(data,'<div>','\n'),'</div>',''),'<br>',''),'&lt;','<'),?,?) FROM note_bodies WHERE note_id IN (SELECT ROWID FROM note WHERE note.title = ?);";
 		sqlite3_prepare(ppDb, sql, -1, &ppStmt, &pzTail);
 		sqlite3_bind_int(ppStmt, 1, offset + strlen(path) + 1);
 		sqlite3_bind_int(ppStmt, 2, (int) size);
-		sqlite3_bind_int(ppStmt, 3, strlen(&path[1]));
-		sqlite3_bind_text(ppStmt, 4, &path[1], -1, SQLITE_TRANSIENT);
+		sqlite3_bind_text(ppStmt, 3, &path[1], -1, SQLITE_TRANSIENT);
 
 		int r;	
 		int b;
