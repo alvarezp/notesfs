@@ -250,7 +250,7 @@ static int notesfs_readdir(const char *path, void *buf, fuse_fill_dir_t filler,
 		v =	sqlite3_column_int(ppStmt, 0);
 		s =	(const char *)sqlite3_column_text(ppStmt, 1);
 
-		if (strcmp(&s[strlen(s)-4], ".txt") == 0) {
+		if (strchr(s,'/') == NULL) {
 			filler(buf, s, NULL, 0);
 			continue;
 		}
