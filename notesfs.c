@@ -365,7 +365,7 @@ static int notesfs_write(const char * path, const char * buf, size_t size, off_t
 
 		ppStmt = NULL;
 		pzTail = NULL;
-		sqlite3_prepare(ppDb, "UPDATE note_bodies SET data = replace(replace(replace(?,'<','&lt;'),'\n','</div><div>'),'&&&','<') WHERE note_id IN (SELECT ROWID FROM note WHERE note.title = ?);", -1, &ppStmt, &pzTail);
+		sqlite3_prepare(ppDb, "UPDATE note_bodies SET data = replace(replace(replace(replace(?,'<','&lt;'),'\n','</div><div>'),'&&&','<'),'<div></div>','<div><br></div>') WHERE note_id IN (SELECT ROWID FROM note WHERE note.title = ?);", -1, &ppStmt, &pzTail);
 		/*sqlite3_prepare(ppDb, "UPDATE note_bodies SET data = ? WHERE substr(data,1,?) == ?;", -1, &ppStmt, &pzTail);*/
 		sqlite3_bind_text(ppStmt, 1, new, -1, SQLITE_STATIC);
 		sqlite3_bind_text(ppStmt, 2, &path[1], -1, SQLITE_TRANSIENT);
