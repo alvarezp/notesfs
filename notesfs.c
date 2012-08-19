@@ -508,7 +508,7 @@ int main(int argc, char *argv[])
 	}
 	argc--;
 
-	lf = fopen("/home/alvarezp/fuse.log", "w");
+	lf = fopen("fuse.log", "w");
 	r = fuse_main(argc, argv, &notesfs_oper, NULL);
 	sqlite3_close(ppDb);
 	return r;
