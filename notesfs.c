@@ -50,6 +50,41 @@ sqlite3 *ppDb;
 
 FILE *lf;
 
+static int notesfs_unlink(const char *path) {
+	if (path[1] == '0') {
+		return -ENOTSUP;
+	}
+
+	int r;
+
+	sqlite3_stmt *ppStmt = NULL;
+	const char *pzTail = NULL;
+	sqlite3_prepare(ppDb, "DELETE FROM note_bodies WHERE note_id IN (SELECT ROWID FROM note WHERE note.title = ?);", -1, &ppStmt, &pzTail);
+	sqlite3_bind_text(ppStmt, 1, &path[1], -1, SQLITE_TRANSIENT);
+
+	r = sqlite3_step(ppStmt);
+	if (r != SQLITE_DONE) {
+		sqlite3_finalize(ppStmt);
+		return -EINVAL;
+	}
+
+	sqlite3_finalize(ppStmt);
+
+	sqlite3_prepare(ppDb, "DELETE FROM note WHERE note.title = ?;", -1, &ppStmt, &pzTail);
+	sqlite3_bind_text(ppStmt, 1, &path[1], -1, SQLITE_TRANSIENT);
+
+	r = sqlite3_step(ppStmt);
+	if (r != SQLITE_DONE) {
+		sqlite3_finalize(ppStmt);
+		return -EINVAL;
+	}
+
+	sqlite3_finalize(ppStmt);
+
+	return 0;
+
+}
+
 static int notesfs_getxattr(const char *path, const char *buf, char *fi, size_t size) {
 	return -ENOTSUP;
 }
@@ -486,6 +521,7 @@ static struct fuse_operations notesfs_oper = {
     .utimens = notesfs_utimens,
     .flush = notesfs_flush,
     .getxattr = notesfs_getxattr,
+    .unlink = notesfs_unlink,
     .create	= notesfs_create
 };
 
