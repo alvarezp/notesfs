@@ -506,13 +506,13 @@ static int notesfs_read(const char *path, char *buf, size_t size, off_t offset,
 
 		int r;	
 		int b;
-		const char *s;
+		const unsigned char *s;
 		r = sqlite3_step(ppStmt);
 		if (r == SQLITE_ROW) {
 			s =	sqlite3_column_text(ppStmt, 0);
 			b = sqlite3_column_bytes(ppStmt, 0);
 			debug("::----- Result OK\n");
-			debug("::-----   strlen(s) = %zu\n", strlen(s));
+			debug("::-----   strlen(s) = %zu\n", strlen((const char *)s));
 			debug("::-----   s = %p\n", s);
 			debug("::-----   s+offset = %p\n", s + offset);
 			debug("::-----   b = %d\n", b);
@@ -543,7 +543,7 @@ static int notesfs_read(const char *path, char *buf, size_t size, off_t offset,
 		sqlite3_bind_int(ppStmt, 3, atoi(id));
 
 		int r;	
-		const char *s;
+		const unsigned char *s;
 		int b;
 		r = sqlite3_step(ppStmt);
 		if (r == SQLITE_ROW) {
