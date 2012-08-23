@@ -3,8 +3,10 @@
 # 1. It is assumed to be written for GNU make.
 # 2. xargs uses -r.
 
+CFLAGS = -ggdb
+
 notesfs: notesfs.c
-	gcc `pkg-config --cflags fuse sqlite3` -o notesfs notesfs.c `pkg-config --libs fuse sqlite3`
+	gcc $(CFLAGS) `pkg-config --cflags fuse sqlite3` -o notesfs notesfs.c `pkg-config --libs fuse sqlite3`
 
 .PHONY : kill
 kill:
