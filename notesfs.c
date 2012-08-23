@@ -36,6 +36,8 @@
 
 #define FUSE_USE_VERSION 26
 
+#define _GNU_SOURCE
+
 #define __STDC_FORMAT_MACROS
 #include <inttypes.h>
 
