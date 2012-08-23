@@ -19,6 +19,8 @@ ALL_OBJS = $(OBJS_TDD) $(OBJS_NO_TDD)
 TESTS = $(OBJS_TDD:.o=.ts)
 LIBS = `pkg-config --libs fuse sqlite3`
 
+filter_TEST_LIBS=regex-replace.o
+
 .PHONY : all
 all: $(APP)
 

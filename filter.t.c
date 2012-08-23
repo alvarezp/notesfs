@@ -29,7 +29,7 @@ int main(void) {
 
 	int test = 0;
 
-	const int test_n = 2;
+	const int test_n = 3;
 
 	char const * input[test_n];
 	char const * expected[test_n];
@@ -39,6 +39,9 @@ int main(void) {
 
 	input[1] = "a";
 	expected[1] = "a";
+
+	input[2] = "<div>para1</div>";
+	expected[2] = "para1";
 
 	for (test = 0; test < test_n; ++test) {
 		char *result = NULL;
