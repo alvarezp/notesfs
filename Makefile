@@ -13,7 +13,7 @@ CFLAGS = -Wall -Werror -ansi -std=c99 -pedantic-errors -ggdb `pkg-config --cflag
 .SECONDARY:
 
 APP = notesfs
-OBJS_TDD = regex-replace.o
+OBJS_TDD = regex-replace.o filter.o
 OBJS_NO_TDD = notesfs.o
 ALL_OBJS = $(OBJS_TDD) $(OBJS_NO_TDD)
 TESTS = $(OBJS_TDD:.o=.ts)
