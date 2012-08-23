@@ -174,11 +174,6 @@ static int notesfs_utimens (const char * path, const struct timespec tv[2]) {
 	return 0;
 }
 
-static int notesfs_setattr (const char * path, const struct timespec tv[2]) {
-	debug(":0 SETATTR[path=%s]\n", path);
-	return 0;
-}
-
 static int notesfs_chown(const char *path, uid_t u, gid_t g) {
 	debug(":0 CHOWN[path=%s]\n", path);
 	return 0;
@@ -405,7 +400,7 @@ static int notesfs_create(const char * path, mode_t mode, struct fuse_file_info 
 
 static int notesfs_write(const char * path, const char * buf, size_t size, off_t offset, struct fuse_file_info *fi) {
 
-	debug(":: WRITE: Should write %zu bytes from position %zd from path %s.\n", size, offset, path);
+	debug(":: WRITE: Should write %zu bytes from position %zd from path %s.\n", size, (intmax_t)offset, path);
 	debug("---- file_info=[flags:%d,writepage=%d,direct_io=%d,keep_cache=%d,flush=%d,nonseekable=%d,fh=%" PRIu64 ",lock_owner=%" PRIu64 "]\n", fi->flags, fi->writepage, fi->direct_io, fi->keep_cache, fi->flush, fi->nonseekable, fi->fh, fi->lock_owner);
 	debug("::-----   Contents: |");
 	fwrite(buf, size, 1, lf);
@@ -484,17 +479,10 @@ static int notesfs_write(const char * path, const char * buf, size_t size, off_t
 static int notesfs_read(const char *path, char *buf, size_t size, off_t offset,
                       struct fuse_file_info *fi)
 {
-	debug(":: READ: Should to read %zu bytes from position %zd from path %s.\n", size, offset, path);
+	debug(":: READ: Should to read %zu bytes from position %zd from path %s.\n", size, (intmax_t)offset, path);
 	debug("---- file_info=[flags:%d,writepage=%d,direct_io=%d,keep_cache=%d,flush=%d,nonseekable=%d,fh=%" PRIu64 ",lock_owner=%" PRIu64 "]\n", fi->flags, fi->writepage, fi->direct_io, fi->keep_cache, fi->flush, fi->nonseekable, fi->fh, fi->lock_owner);
 
 	if (path[1] != '0') {
-
-		char id[5];
-
-		id[0] = path[2];
-		id[1] = path[3];
-		id[2] = path[4];
-		id[3] = path[5];
 
 		sqlite3_stmt *ppStmt = NULL;
 		const char *pzTail;
