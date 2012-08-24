@@ -28,7 +28,7 @@
  *    ln ../Library/Notes/notes.db
  *
  * As an alternative, if your iPhone is connected to the network, you can mount
- * it by using SSHFS. However, make you you have your iPhone connected, because
+ * it by using SSHFS. However, make sure you have your iPhone connected, because
  * filesystem monitors will be constantly polling your iPhone FS and notesfs
  * and the battery may drain faster.
  *
