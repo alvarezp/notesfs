@@ -69,6 +69,8 @@ void debug(const char *fmt, ...)
 
 
 static int notesfs_unlink(const char *path) {
+	debug(":: UNLINK[path=%s]\n", path);
+
 	if (path[1] == '0') {
 		return -ENOTSUP;
 	}
@@ -104,14 +106,19 @@ static int notesfs_unlink(const char *path) {
 }
 
 static int notesfs_getxattr(const char *path, const char *buf, char *fi, size_t size) {
+	debug(":! GETXATTR[path=%s]\n", path);
+
 	return -ENOTSUP;
 }
 
 static int notesfs_flush(const char *path, struct fuse_file_info *fi) {
+	debug(":0 FLUSH[path=%s]\n", path);
 	return 0;
 }
 
 static int notesfs_truncate(const char *path, off_t o) {
+
+	debug(":: TRUNCATE[path=%s]\n", path);
 
 	if (path[1] != '0') {
 
@@ -141,31 +148,38 @@ static int notesfs_truncate(const char *path, off_t o) {
 }
 
 static int notesfs_ftruncate(const char * path, off_t o, struct fuse_file_info *fi) {
+	debug(":0 FTRUNCATE[path=%s]\n", path);
 	return 0;
 }
 
 static int notesfs_utime(const char *path, struct utimbuf *u) {
+	debug(":0 UTIME[path=%s]\n", path);
 	return 0;
 }
 
 static int notesfs_utimens (const char * path, const struct timespec tv[2]) {
+	debug(":0 UTIMENS[path=%s]\n", path);
 	return 0;
 }
 
 static int notesfs_setattr (const char * path, const struct timespec tv[2]) {
+	debug(":0 SETATTR[path=%s]\n", path);
 	return 0;
 }
 
 static int notesfs_chown(const char *path, uid_t u, gid_t g) {
+	debug(":0 CHOWN[path=%s]\n", path);
 	return 0;
 }
 
 static int notesfs_chmod(const char *path, mode_t m) {
+	debug(":0 CHMOD[path=%s]\n", path);
 	return 0;
 }
 
 static int notesfs_getattr(const char *path, struct stat *stbuf)
 {
+	debug(":: GETATTR[path=%s]\n", path);
 
 	/* The 'st_dev' and 'st_blksize' fields are ignored. The 'st_ino'
 	 * field is ignored except if the 'use_ino' mount option is given.
@@ -282,6 +296,8 @@ static int notesfs_getattr(const char *path, struct stat *stbuf)
 static int notesfs_readdir(const char *path, void *buf, fuse_fill_dir_t filler,
                          off_t offset, struct fuse_file_info *fi)
 {
+
+	debug(":: READDIR[path=%s]\n", path);
     (void) offset;
     (void) fi;
 
@@ -321,12 +337,14 @@ static int notesfs_readdir(const char *path, void *buf, fuse_fill_dir_t filler,
 
 static int notesfs_open(const char *path, struct fuse_file_info *fi)
 {
+	debug(":0 OPEN[path=%s]\n", path);
 
 	return 0;
 }
 
 static int notesfs_create(const char * path, mode_t mode, struct fuse_file_info *fi)
 {
+	debug(":: CREATE[path=%s]\n", path);
 
 	if (path[1] == '0') {
 		return -ENOTSUP;
