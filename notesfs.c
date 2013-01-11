@@ -50,6 +50,21 @@ sqlite3 *ppDb;
 
 FILE *lf;
 
+void debug(const char *fmt, ...)
+{
+
+	va_list args;
+
+	va_start(args, fmt);
+
+	vfprintf(lf, fmt, args);
+
+	va_end(args);
+
+	fflush(lf);
+}
+
+
 static int notesfs_unlink(const char *path) {
 	if (path[1] == '0') {
 		return -ENOTSUP;
@@ -353,10 +368,10 @@ static int notesfs_create(const char * path, mode_t mode, struct fuse_file_info 
 
 static int notesfs_write(const char * path, const char * buf, size_t size, off_t offset, struct fuse_file_info *fi) {
 
-	fprintf(lf, ":: WRITE: Should write %zu bytes from position %zd from path %s.\n", size, offset, path);
-	fprintf(lf, "::-----   Contents: |");
+	debug(":: WRITE: Should write %zu bytes from position %zd from path %s.\n", size, offset, path);
+	debug("::-----   Contents: |");
 	fwrite(buf, size, 1, lf);
-	fprintf(lf, "|\n");
+	debug("|\n");
 
 	if (path[1] != '0') {
 
@@ -377,7 +392,7 @@ static int notesfs_write(const char * path, const char * buf, size_t size, off_t
 			b = sqlite3_column_bytes(ppStmt, 0);
 			s = malloc(b+1);
 			strncpy(s,s1,b);
-		fprintf(lf, "::-----   b,s = %d|%s|\n", b,s);
+		debug("::-----   b,s = %d|%s|\n", b,s);
 		} else {
 			sqlite3_finalize(ppStmt);
 			return -EINVAL;
@@ -404,11 +419,11 @@ static int notesfs_write(const char * path, const char * buf, size_t size, off_t
 		/*sqlite3_prepare(ppDb, "UPDATE note_bodies SET data = ? WHERE substr(data,1,?) == ?;", -1, &ppStmt, &pzTail);*/
 		sqlite3_bind_text(ppStmt, 1, new, -1, SQLITE_STATIC);
 		sqlite3_bind_text(ppStmt, 2, &path[1], -1, SQLITE_TRANSIENT);
-		fprintf(lf, "::----- ABOUT TO WRITE:\n");
-		fprintf(lf, "::-----   old = |");
+		debug("::----- ABOUT TO WRITE:\n");
+		debug("::-----   old = |");
 		fwrite(s, b, 1, lf);
-		fprintf(lf, "|\n");
-		fprintf(lf, "::-----   new = %s\n", new);
+		debug("|\n");
+		debug("::-----   new = %s\n", new);
 
 		r = sqlite3_step(ppStmt);
 		if (r != SQLITE_DONE) {
@@ -431,7 +446,7 @@ static int notesfs_write(const char * path, const char * buf, size_t size, off_t
 static int notesfs_read(const char *path, char *buf, size_t size, off_t offset,
                       struct fuse_file_info *fi)
 {
-	fprintf(lf, ":: READ: Should to read %zu bytes from position %zd from path %s.\n", size, offset, path);
+	debug(":: READ: Should to read %zu bytes from position %zd from path %s.\n", size, offset, path);
 
 	if (path[1] != '0') {
 
@@ -457,15 +472,15 @@ static int notesfs_read(const char *path, char *buf, size_t size, off_t offset,
 		if (r == SQLITE_ROW) {
 			s =	sqlite3_column_text(ppStmt, 0);
 			b = sqlite3_column_bytes(ppStmt, 0);
-			fprintf(lf, "::----- Result OK\n");
-			fprintf(lf, "::-----   strlen(s) = %zu\n", strlen(s));
-			fprintf(lf, "::-----   s = %p\n", s);
-			fprintf(lf, "::-----   s+offset = %p\n", s + offset);
-			fprintf(lf, "::-----   b = %d\n", b);
+			debug("::----- Result OK\n");
+			debug("::-----   strlen(s) = %zu\n", strlen(s));
+			debug("::-----   s = %p\n", s);
+			debug("::-----   s+offset = %p\n", s + offset);
+			debug("::-----   b = %d\n", b);
 
 			memcpy(buf, s + offset, b);
 		} else {
-			fprintf(lf, "::----- Result NOT OK\n");
+			debug("::----- Result NOT OK\n");
 			return -EINVAL;
 		} 
 
