@@ -36,6 +36,9 @@
 
 #define FUSE_USE_VERSION 26
 
+#define __STDC_FORMAT_MACROS
+#include <inttypes.h>
+
 #include <fuse.h>
 #include <stdio.h>
 #include <string.h>
@@ -113,6 +116,7 @@ static int notesfs_getxattr(const char *path, const char *buf, char *fi, size_t 
 
 static int notesfs_flush(const char *path, struct fuse_file_info *fi) {
 	debug(":0 FLUSH[path=%s]\n", path);
+	debug("---- file_info=[flags:%d,writepage=%d,direct_io=%d,keep_cache=%d,flush=%d,nonseekable=%d,fh=%" PRIu64 ",lock_owner=%" PRIu64 "]\n", fi->flags, fi->writepage, fi->direct_io, fi->keep_cache, fi->flush, fi->nonseekable, fi->fh, fi->lock_owner);
 	return 0;
 }
 
@@ -149,6 +153,7 @@ static int notesfs_truncate(const char *path, off_t o) {
 
 static int notesfs_ftruncate(const char * path, off_t o, struct fuse_file_info *fi) {
 	debug(":0 FTRUNCATE[path=%s]\n", path);
+	debug("---- file_info=[flags:%d,writepage=%d,direct_io=%d,keep_cache=%d,flush=%d,nonseekable=%d,fh=%" PRIu64 ",lock_owner=%" PRIu64 "]\n", fi->flags, fi->writepage, fi->direct_io, fi->keep_cache, fi->flush, fi->nonseekable, fi->fh, fi->lock_owner);
 	return 0;
 }
 
@@ -298,6 +303,8 @@ static int notesfs_readdir(const char *path, void *buf, fuse_fill_dir_t filler,
 {
 
 	debug(":: READDIR[path=%s]\n", path);
+	debug("---- file_info=[flags:%d,writepage=%d,direct_io=%d,keep_cache=%d,flush=%d,nonseekable=%d,fh=%" PRIu64 ",lock_owner=%" PRIu64 "]\n", fi->flags, fi->writepage, fi->direct_io, fi->keep_cache, fi->flush, fi->nonseekable, fi->fh, fi->lock_owner);
+
     (void) offset;
     (void) fi;
 
@@ -338,6 +345,7 @@ static int notesfs_readdir(const char *path, void *buf, fuse_fill_dir_t filler,
 static int notesfs_open(const char *path, struct fuse_file_info *fi)
 {
 	debug(":0 OPEN[path=%s]\n", path);
+	debug("---- file_info=[flags:%d,writepage=%d,direct_io=%d,keep_cache=%d,flush=%d,nonseekable=%d,fh=%" PRIu64 ",lock_owner=%" PRIu64 "]\n", fi->flags, fi->writepage, fi->direct_io, fi->keep_cache, fi->flush, fi->nonseekable, fi->fh, fi->lock_owner);
 
 	return 0;
 }
@@ -345,6 +353,7 @@ static int notesfs_open(const char *path, struct fuse_file_info *fi)
 static int notesfs_create(const char * path, mode_t mode, struct fuse_file_info *fi)
 {
 	debug(":: CREATE[path=%s]\n", path);
+	debug("---- file_info=[flags:%d,writepage=%d,direct_io=%d,keep_cache=%d,flush=%d,nonseekable=%d,fh=%" PRIu64 ",lock_owner=%" PRIu64 "]\n", fi->flags, fi->writepage, fi->direct_io, fi->keep_cache, fi->flush, fi->nonseekable, fi->fh, fi->lock_owner);
 
 	if (path[1] == '0') {
 		return -ENOTSUP;
@@ -390,6 +399,7 @@ static int notesfs_create(const char * path, mode_t mode, struct fuse_file_info 
 static int notesfs_write(const char * path, const char * buf, size_t size, off_t offset, struct fuse_file_info *fi) {
 
 	debug(":: WRITE: Should write %zu bytes from position %zd from path %s.\n", size, offset, path);
+	debug("---- file_info=[flags:%d,writepage=%d,direct_io=%d,keep_cache=%d,flush=%d,nonseekable=%d,fh=%" PRIu64 ",lock_owner=%" PRIu64 "]\n", fi->flags, fi->writepage, fi->direct_io, fi->keep_cache, fi->flush, fi->nonseekable, fi->fh, fi->lock_owner);
 	debug("::-----   Contents: |");
 	fwrite(buf, size, 1, lf);
 	debug("|\n");
@@ -468,6 +478,7 @@ static int notesfs_read(const char *path, char *buf, size_t size, off_t offset,
                       struct fuse_file_info *fi)
 {
 	debug(":: READ: Should to read %zu bytes from position %zd from path %s.\n", size, offset, path);
+	debug("---- file_info=[flags:%d,writepage=%d,direct_io=%d,keep_cache=%d,flush=%d,nonseekable=%d,fh=%" PRIu64 ",lock_owner=%" PRIu64 "]\n", fi->flags, fi->writepage, fi->direct_io, fi->keep_cache, fi->flush, fi->nonseekable, fi->fh, fi->lock_owner);
 
 	if (path[1] != '0') {
 
