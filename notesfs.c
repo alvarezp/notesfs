@@ -88,9 +88,11 @@ static int notesfs_unlink(const char *path) {
 	r = sqlite3_step(ppStmt);
 	if (r != SQLITE_DONE) {
 		sqlite3_finalize(ppStmt);
+		debug("---- Couldn't DELETE FROM note_bodies WHERE note_id IN (SELECT ROWID FROM note WHERE note.title = '%d'). Returning -EINVAL\n", &path[1]);
 		return -EINVAL;
 	}
 
+	debug("---- Successfully DELETED FROM note_bodies\n");
 	sqlite3_finalize(ppStmt);
 
 	sqlite3_prepare(ppDb, "DELETE FROM note WHERE note.title = ?;", -1, &ppStmt, &pzTail);
@@ -99,9 +101,11 @@ static int notesfs_unlink(const char *path) {
 	r = sqlite3_step(ppStmt);
 	if (r != SQLITE_DONE) {
 		sqlite3_finalize(ppStmt);
+		debug("---- Couldn't DELETE FROM note WHERE note.title = '%d'. Returning -EINVAL\n", &path[1]);
 		return -EINVAL;
 	}
 
+	debug("---- Successfully DELETED FROM note\n");
 	sqlite3_finalize(ppStmt);
 
 	return 0;
@@ -111,6 +115,7 @@ static int notesfs_unlink(const char *path) {
 static int notesfs_getxattr(const char *path, const char *buf, char *fi, size_t size) {
 	debug(":! GETXATTR[path=%s]\n", path);
 
+	debug("---- Operation not supported by me.\n");
 	return -ENOTSUP;
 }
 
