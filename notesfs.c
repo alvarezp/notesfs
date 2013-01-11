@@ -53,6 +53,9 @@ FILE *lf;
 void debug(const char *fmt, ...)
 {
 
+	if (lf == NULL)
+		return;
+
 	va_list args;
 
 	va_start(args, fmt);
@@ -543,6 +546,7 @@ static struct fuse_operations notesfs_oper = {
 int main(int argc, char *argv[])
 {
 	int r;
+	char * logfile;
 
 	printf("\nTHIS PROGRAM WILL PROBABLY MAKE YOU LOSE YOUR NOTES. BACK THEM UP!\n");
 	printf("\n");
@@ -559,7 +563,12 @@ int main(int argc, char *argv[])
 	}
 	argc--;
 
-	lf = fopen("fuse.log", "w");
+	lf = NULL;
+	logfile = getenv("NOTESFS_DEBUG");
+	if (logfile != NULL) {
+		lf = fopen(logfile, "w");
+	}
+
 	r = fuse_main(argc, argv, &notesfs_oper, NULL);
 	sqlite3_close(ppDb);
 	return r;
