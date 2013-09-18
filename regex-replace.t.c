@@ -6,10 +6,13 @@
 
 int test() {
 
-	char * r = regex_simplereplace("abcdefghijkl", "g", "h", 0, 0);
+	char * r;
+	char * e;
 
-	if ((strcmp(r, "abcdefhhijkl")) != 0) {
-		fprintf(stderr, "I was expecting:\n==> %s\nbut I got:\n==> %s\n", "abcdefhhijkl", r);
+	r = regex_simplereplace("abcdefghijkl", "g", "h", 0, 0);
+	e = "abcdefhhijkl";
+	if ((strcmp(r, e)) != 0) {
+		fprintf(stderr, "I was expecting:\n==> %s\nbut I got:\n==> %s\n", e, r);
 		return EXIT_FAILURE;
 	}
 
