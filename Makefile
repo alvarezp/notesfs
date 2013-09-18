@@ -32,7 +32,7 @@ Makefile:
 
 $(APP): Makefile $(ALL_OBJS) $(TESTS)
 	@echo -e '\n'== $@, building app...
-	gcc -o $(APP) $(LIBS) $(ALL_OBJS)
+	gcc -o $(APP) $(ALL_OBJS) $(LIBS)
 
 # Compile plus generate dependency information.
 %.o: Makefile %.c
