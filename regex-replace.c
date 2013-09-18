@@ -10,9 +10,7 @@
 
 char * regex_simplereplace(const char* string_to_search_in, const char* restrict pattern, const char* replacement, int case_insensitive, int global_replace) {
 
-	int replacement_len = strlen(replacement);
-
-	char *ret = (void *)malloc(strlen(string_to_search_in)+1);
+	char *ret = (void *)malloc(1);
 	strcpy(ret, "");
 
 	regex_t compiled;
@@ -40,9 +38,7 @@ char * regex_simplereplace(const char* string_to_search_in, const char* restrict
 			return NULL;
 		}
 
-		if (matchptr[0].rm_eo - matchptr[0].rm_so < replacement_len) {
-			ret = (void *)realloc(ret, strlen(ret) + matchptr[0].rm_so + replacement_len - matchptr[0].rm_eo + matchptr[0].rm_so + 1);
-		}
+		ret = (void *)realloc(ret, strlen(ret) + matchptr[0].rm_so + 1);
 
 		strncat(ret, string_to_search_in + from, matchptr[0].rm_so);
 
@@ -57,23 +53,26 @@ char * regex_simplereplace(const char* string_to_search_in, const char* restrict
 		while (rep_off < rep_len) {
 			pos = strchr(replacement+rep_off, REPCHAR);
 			if (pos == NULL) {
+				ret = (void *)realloc(ret, strlen(ret) + strlen(replacement+rep_off) + 1);
 				strcat(ret, replacement+rep_off);
-				rep_off =+ strlen(replacement+rep_off);
+				rep_off += strlen(replacement+rep_off);
 				continue;
 			}
 
 			strncat(ret, replacement+rep_off, pos - (replacement+rep_off));
 			if ((*(pos+1) == '\0') && (*(pos+1) == REPCHAR)) {
+				ret = (void *)realloc(ret, strlen(ret) + 1);
 				*ret = REPCHAR;
 				*(ret+1) = '\0';
-				rep_off =+ 1;
+				rep_off += 1;
 				continue;
 			}
 
 			if (*(pos+1) == REPCHAR) {
+				ret = (void *)realloc(ret, strlen(ret) + 1);
 				*ret = REPCHAR;
 				*(ret+1) = '\0';
-				rep_off =+ 1;
+				rep_off += 1;
 				continue;
 			}
 
@@ -89,15 +88,17 @@ char * regex_simplereplace(const char* string_to_search_in, const char* restrict
 				++replacement_group_nextchar;
 			}
 			if (replacement_group < MAXSUBS) {
+				ret = (void *)realloc(ret, strlen(ret) + matchptr[replacement_group].rm_eo - matchptr[replacement_group].rm_so + 1);
 				strncat(ret, string_to_search_in + matchptr[replacement_group].rm_so, matchptr[replacement_group].rm_eo - matchptr[replacement_group].rm_so);
 			}
-			rep_off =+ replacement_group_nextchar;
+			rep_off += replacement_group_nextchar;
 		}
 
 		from += matchptr[0].rm_eo;
 
 	}
 
+	ret = (void *)realloc(ret, strlen(ret) + strlen(string_to_search_in + from) + 1);
 	strcat(ret, string_to_search_in + from);
 
 	regfree(&compiled);
