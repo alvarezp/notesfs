@@ -63,6 +63,13 @@ int test() {
 		return EXIT_FAILURE;
 	}
 
+	r = regex_simplereplace("abc<span tag='x'>def</span>ghi", "<span[^>]+>([^<]+)</span>", "%1", 1, 1);
+	e = "abcdefghi";
+	if ((strcmp(r, e)) != 0) {
+		fprintf(stderr, "I was expecting:\n==> %s\nbut I got:\n==> %s\n", e, r);
+		return EXIT_FAILURE;
+	}
+
 	return EXIT_SUCCESS;
 }
 
