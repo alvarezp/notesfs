@@ -29,7 +29,7 @@ int main(void) {
 
 	int test = 0;
 
-	const int test_n = 6;
+	const int test_n = 7;
 
 	char const * input[test_n];
 	char const * expected[test_n];
@@ -51,6 +51,9 @@ int main(void) {
 
 	input[5] = "<div>para1 <span attr='val'>text</span>more<br>text</div><div>para2</div>";
 	expected[5] = "para1 textmoretext\npara2";
+
+	input[6] = "<div>para1 <span attr='val'>text</span>mo&lt;re<br>text</div><div>para2</div>";
+	expected[6] = "para1 textmo<retext\npara2";
 
 	for (test = 0; test < test_n; ++test) {
 		char *result = NULL;

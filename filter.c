@@ -19,5 +19,7 @@ char * decode_alloc(char const * const _i) {
 
 	ret = regex_simplereplace(ret, "<div>([^<]+)</div>", "%1\n", 1, 1);
 
+	ret = regex_simplereplace(ret, "&lt;", "<", 1, 1);
+
 	return ret;
 }
