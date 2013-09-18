@@ -57,7 +57,7 @@ $(APP): Makefile $(ALL_OBJS) $(TESTS)
 
 %.t: %.to %.o
 	@echo -e '\n'== $@, building test...
-	gcc -o $*.t $^
+	gcc -o $*.t $^ $($(@:.t=_TEST_LIBS))
 
 .PHONY : clean
 clean:
