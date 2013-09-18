@@ -56,6 +56,13 @@ int test() {
 		return EXIT_FAILURE;
 	}
 
+	r = regex_simplereplace("metete tete que te metas tete", "((te)+ )+", "T! ", 0, 1);
+	e = "meT! que T! metas tete";
+	if ((strcmp(r, e)) != 0) {
+		fprintf(stderr, "I was expecting:\n==> %s\nbut I got:\n==> %s\n", e, r);
+		return EXIT_FAILURE;
+	}
+
 	return EXIT_SUCCESS;
 }
 
