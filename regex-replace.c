@@ -5,11 +5,11 @@
 
 #include "regex-replace.h"
 
-char * regex_simplereplace(const char* string_to_match_against, const char* restrict pattern, const char* replacement, int case_insensitive, int global_replace) {
+char * regex_simplereplace(const char* string_to_search_in, const char* restrict pattern, const char* replacement, int case_insensitive, int global_replace) {
 
 	int replacement_len = strlen(replacement);
 
-	char *ret = (void *)malloc(strlen(string_to_match_against)+1);
+	char *ret = (void *)malloc(strlen(string_to_search_in)+1);
 	strcpy(ret, "");
 
 	regex_t compiled;
@@ -26,9 +26,9 @@ char * regex_simplereplace(const char* string_to_match_against, const char* rest
 	regmatch_t matchptr;
 
 	int from = 0;
-	for (errcode = regexec(&compiled, string_to_match_against, nmatch, &matchptr, 0);
+	for (errcode = regexec(&compiled, string_to_search_in, nmatch, &matchptr, 0);
 		errcode != REG_NOMATCH && (global_replace != 0 || from == 0);
-		errcode = regexec(&compiled, string_to_match_against + from, nmatch, &matchptr, 0))
+		errcode = regexec(&compiled, string_to_search_in + from, nmatch, &matchptr, 0))
 	{
 
 		if (errcode != 0) {
@@ -39,13 +39,13 @@ char * regex_simplereplace(const char* string_to_match_against, const char* rest
 			ret = (void *)realloc(ret, strlen(ret) + matchptr.rm_so + replacement_len - matchptr.rm_eo + matchptr.rm_so + 1);
 		}
 
-		strncat(ret, string_to_match_against + from, matchptr.rm_so);
+		strncat(ret, string_to_search_in + from, matchptr.rm_so);
 		strcat(ret, replacement);
 		from += matchptr.rm_eo;
 
 	}
 
-	strcat(ret, string_to_match_against + from);
+	strcat(ret, string_to_search_in + from);
 
 	regfree(&compiled);
 
