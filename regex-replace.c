@@ -7,6 +7,8 @@
 
 char * regex_simplereplace(const char* string_to_match_against, const char* restrict pattern, const char* replacement, int case_insensitive, int global_replace) {
 
+	int replacement_len = strlen(replacement);
+
 	char *ret = (void *)malloc(strlen(string_to_match_against)+1);
 	strcpy(ret, "");
 
@@ -31,6 +33,10 @@ char * regex_simplereplace(const char* string_to_match_against, const char* rest
 
 		if (errcode != 0) {
 			return NULL;
+		}
+
+		if (matchptr.rm_eo - matchptr.rm_so < replacement_len) {
+			ret = (void *)realloc(ret, strlen(ret) + matchptr.rm_so + replacement_len - matchptr.rm_eo + matchptr.rm_so + 1);
 		}
 
 		strncat(ret, string_to_match_against + from, matchptr.rm_so);
