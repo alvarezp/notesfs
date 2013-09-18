@@ -27,7 +27,7 @@ char * regex_simplereplace(const char* string_to_match_against, const char* rest
 
 	int from = 0;
 	for (errcode = regexec(&compiled, string_to_match_against, nmatch, &matchptr, 0);
-		errcode != REG_NOMATCH;
+		errcode != REG_NOMATCH && (global_replace != 0 || from == 0);
 		errcode = regexec(&compiled, string_to_match_against + from, nmatch, &matchptr, 0))
 	{
 

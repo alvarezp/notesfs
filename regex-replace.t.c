@@ -24,6 +24,21 @@ int test() {
 		return EXIT_FAILURE;
 	}
 
+	/* regex_simplereplace() was always doing global replaces; make sure we fixed that. */
+	r = regex_simplereplace("10 quick fox", " ", "_", 0, 0);
+	e = "10_quick fox";
+	if ((strcmp(r, e)) != 0) {
+		fprintf(stderr, "I was expecting:\n==> %s\nbut I got:\n==> %s\n", e, r);
+		return EXIT_FAILURE;
+	}
+
+	/* Just to make sure we didn't break anything with the above test. */
+	r = regex_simplereplace("20 quick fox", " ", "_", 0, 1);
+	e = "20_quick_fox";
+	if ((strcmp(r, e)) != 0) {
+		fprintf(stderr, "I was expecting:\n==> %s\nbut I got:\n==> %s\n", e, r);
+		return EXIT_FAILURE;
+	}
 
 	return EXIT_SUCCESS;
 }
