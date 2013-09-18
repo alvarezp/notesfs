@@ -11,7 +11,9 @@ char * decode_alloc(char const * const _i) {
 	char *ret = malloc(1);
 	strcpy(ret, "");
 
-	ret = regex_simplereplace(_i, "<span [^>]+>([^<]+)</span>", "%1", 1, 1);
+	ret = regex_simplereplace(_i, "<br>", "", 1, 1);
+
+	ret = regex_simplereplace(ret, "<span [^>]+>([^<]+)</span>", "%1", 1, 1);
 
 	ret = regex_simplereplace(ret, "<div>([^<]+)</div>$", "%1", 1, 1);
 
