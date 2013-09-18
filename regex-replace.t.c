@@ -40,6 +40,22 @@ int test() {
 		return EXIT_FAILURE;
 	}
 
+	/* Make sure case_insensitive == 1 is working correctly */
+	r = regex_simplereplace("Rapid roadrunner", "r", ":", 1, 1);
+	e = ":apid :oad:unne:";
+	if ((strcmp(r, e)) != 0) {
+		fprintf(stderr, "I was expecting:\n==> %s\nbut I got:\n==> %s\n", e, r);
+		return EXIT_FAILURE;
+	}
+
+	/* Make sure case_insensitive == 0 is working correctly */
+	r = regex_simplereplace("Rapid roadrunner", "r", ":", 0, 1);
+	e = "Rapid :oad:unne:";
+	if ((strcmp(r, e)) != 0) {
+		fprintf(stderr, "I was expecting:\n==> %s\nbut I got:\n==> %s\n", e, r);
+		return EXIT_FAILURE;
+	}
+
 	return EXIT_SUCCESS;
 }
 
