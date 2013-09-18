@@ -29,7 +29,7 @@ int main(void) {
 
 	int test = 0;
 
-	const int test_n = 4;
+	const int test_n = 5;
 
 	char const * input[test_n];
 	char const * expected[test_n];
@@ -45,6 +45,9 @@ int main(void) {
 
 	input[3] = "<div>para1</div><div>para2</div>";
 	expected[3] = "para1\npara2";
+
+	input[4] = "<div>para1 <span attr='val'>text</span></div><div>para2</div>";
+	expected[4] = "para1 text\npara2";
 
 	for (test = 0; test < test_n; ++test) {
 		char *result = NULL;
