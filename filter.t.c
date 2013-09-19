@@ -41,19 +41,19 @@ int main(void) {
 	expected[1] = "a";
 
 	input[2] = "<div>para1</div>";
-	expected[2] = "para1";
+	expected[2] = "para1\n";
 
 	input[3] = "<div>para1</div><div>para2</div>";
-	expected[3] = "para1\npara2";
+	expected[3] = "para1\npara2\n";
 
 	input[4] = "<div>para1 <span attr='val'>text</span></div><div>para2</div>";
-	expected[4] = "para1 text\npara2";
+	expected[4] = "para1 text\npara2\n";
 
 	input[5] = "<div>para1 <span attr='val'>text</span>more<br>text</div><div>para2</div>";
-	expected[5] = "para1 textmoretext\npara2";
+	expected[5] = "para1 textmoretext\npara2\n";
 
 	input[6] = "<div>para1 <span attr='val'>text</span>mo&lt;re<br>text</div><div>para2</div>";
-	expected[6] = "para1 textmo<retext\npara2";
+	expected[6] = "para1 textmo<retext\npara2\n";
 
 	for (test = 0; test < test_n; ++test) {
 		char *result = NULL;
