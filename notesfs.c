@@ -49,6 +49,8 @@
 #include <fcntl.h>
 #include <sqlite3.h>
 
+#include "filter.h"
+
 #define NOTES_EPOCH 978307200
 
 sqlite3 *ppDb;
@@ -486,9 +488,9 @@ static int notesfs_read(const char *path, char *buf, size_t size, off_t offset,
 
 		sqlite3_stmt *ppStmt = NULL;
 		const char *pzTail;
-		const char *sql = "SELECT substr(replace(replace(replace(replace(data,'<div>','\n'),'</div>',''),'<br>',''),'&lt;','<'),?,?) FROM note_bodies WHERE note_id IN (SELECT ROWID FROM note WHERE note.title = ?);";
+		const char *sql = "SELECT substr(data,?,?) FROM note_bodies WHERE note_id IN (SELECT ROWID FROM note WHERE note.title = ?);";
 		sqlite3_prepare(ppDb, sql, -1, &ppStmt, &pzTail);
-		sqlite3_bind_int(ppStmt, 1, offset + strlen(path) + 1);
+		sqlite3_bind_int(ppStmt, 1, offset + strlen(path));
 		sqlite3_bind_int(ppStmt, 2, (int) size);
 		sqlite3_bind_text(ppStmt, 3, &path[1], -1, SQLITE_TRANSIENT);
 
@@ -505,7 +507,21 @@ static int notesfs_read(const char *path, char *buf, size_t size, off_t offset,
 			debug("::-----   s+offset = %p\n", s + offset);
 			debug("::-----   b = %d\n", b);
 
-			memcpy(buf, s + offset, b);
+			debug("::-----   s = %s\n", s);
+			char * t = malloc(b+10);
+			memcpy(t, s, b);
+			t[b]='\0';
+			debug("::-----   t = %s\n", t);
+
+			t = decode_alloc((char *)s);
+			debug("::-----   t = %s\n", t);
+
+			strcpy(buf, t);
+			debug("::-----   buf = %s\n", buf);
+
+			b = strlen(t);
+
+			free(t);
 		} else {
 			debug("::----- Result NOT OK\n");
 			return -EINVAL;
@@ -513,7 +529,7 @@ static int notesfs_read(const char *path, char *buf, size_t size, off_t offset,
 
 		sqlite3_finalize(ppStmt);
 
-		return b;
+		return b+1;
 	} else {
 
 		char id[5];
