@@ -89,7 +89,7 @@ char * regex_simplereplace(const char* string_to_search_in, const char* restrict
 			}
 			if (replacement_group < MAXSUBS) {
 				ret = (void *)realloc(ret, strlen(ret) + matchptr[replacement_group].rm_eo - matchptr[replacement_group].rm_so + 1);
-				strncat(ret, string_to_search_in + matchptr[replacement_group].rm_so, matchptr[replacement_group].rm_eo - matchptr[replacement_group].rm_so);
+				strncat(ret, string_to_search_in + from + matchptr[replacement_group].rm_so, matchptr[replacement_group].rm_eo - matchptr[replacement_group].rm_so);
 			}
 			rep_off += replacement_group_nextchar;
 		}

@@ -77,6 +77,13 @@ int test() {
 		return EXIT_FAILURE;
 	}
 
+	r = regex_simplereplace("<div>Botella</div><div>Cuartito</div>Caguama", "<div>([^<]+)</div>", "%1\n", 1, 1);
+	e = "Botella\nCuartito\nCaguama";
+	if ((strcmp(r, e)) != 0) {
+		fprintf(stderr, "I was expecting:\n==> %s\nbut I got:\n==> %s\n", e, r);
+		return EXIT_FAILURE;
+	}
+
 	return EXIT_SUCCESS;
 }
 
