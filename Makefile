@@ -58,7 +58,7 @@ $(APP): $(ALL_OBJS) $(TESTS) Makefile
 	./$*.t && touch $*.ts;
 
 %.t.c:
-	@echo -e '\n'===== $@ doesn\'t exist! Please create one.
+	@echo -e '\n'===== $@ doesn\'t exist\! Please create one.
 	@false
 
 %.to: %.t.c Makefile
