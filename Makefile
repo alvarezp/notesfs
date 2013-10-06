@@ -42,18 +42,18 @@ all: $(APP)
 # changes.
 Makefile:
 
-$(APP): Makefile $(ALL_OBJS) $(TESTS)
+$(APP): $(ALL_OBJS) $(TESTS) Makefile 
 	@echo -e '\n'===== $@, building app...
 	gcc -o $(APP) $(ALL_OBJS) $(LIBS)
 
 # Compile plus generate dependency information.
-%.o: Makefile %.c
+%.o: %.c Makefile
 	@echo -e '\n'===== $@, building module...
 	gcc $(CFLAGS) -o $*.o -c $*.c
 	@echo -e '\n'===== $@, generating dependency information...
 	gcc $(CFLAGS) -MM -MP -MT $*.o $*.c > $*.d
 
-%.ts: Makefile %.t
+%.ts: %.t Makefile 
 	@echo -e '\n'===== $@, testing...
 	./$*.t && touch $*.ts;
 
@@ -61,7 +61,7 @@ $(APP): Makefile $(ALL_OBJS) $(TESTS)
 	@echo -e '\n'===== $@ doesn\'t exist! Please create one.
 	@false
 
-%.to: Makefile %.t.c
+%.to: %.t.c Makefile
 	@echo -e '\n'===== $@, building test module...
 	gcc $(CFLAGS) -o $*.to -c $*.t.c
 	@echo -e '\n'===== $@, generating dependency information...
