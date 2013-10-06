@@ -81,4 +81,7 @@ clean:
 	rm -f *.to
 	rm -f *.ts
 
-
+.PHONY : force
+force:
+	$(MAKE) clean
+	$(MAKE) all
