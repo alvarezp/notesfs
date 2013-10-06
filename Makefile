@@ -21,6 +21,16 @@ LIBS = `pkg-config --libs fuse sqlite3`
 
 filter_TEST_LIBS=regex-replace.o
 
+.PHONY : kill
+kill:
+	pgrep notesfs | xargs -r kill
+
+.PHONY : forcekill
+forcekill:
+	pgrep notesfs | xargs -r kill -9
+
+.DEFAULT_GOAL := all
+
 .PHONY : all
 all: $(APP)
 
@@ -71,11 +81,4 @@ clean:
 	rm -f *.to
 	rm -f *.ts
 
-.PHONY : kill
-kill:
-	pgrep notesfs | xargs -r kill
-
-.PHONY : forcekill
-forcekill:
-	pgrep notesfs | xargs -r kill -9
 
